@@ -183,7 +183,7 @@ const Dashboard: React.FC = () => {
                       </span>
                     </div>
                     {completed ? (
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <div className="flex items-center gap-2 text-green-400">
                           <CheckCircle className="w-5 h-5" />
                           <span>Пройдено</span>
@@ -191,6 +191,9 @@ const Dashboard: React.FC = () => {
                         <p className="text-white font-semibold">
                           Результат: {result?.correctAnswers}/{result?.totalQuestions}
                           ({Math.round(((result?.correctAnswers || 0) / (result?.totalQuestions || 1)) * 100)}%)
+                        </p>
+                        <p className="text-blue-300 text-xs">
+                          Для пересдачи обратитесь к администратору
                         </p>
                       </div>
                     ) : (

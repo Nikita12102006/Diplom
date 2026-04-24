@@ -20,7 +20,7 @@ async function api<T>(url: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T;
 }
 
-// ===== session (only userId) =====
+// ===== session =====
 export const setCurrentUserId = (id: string | null) => {
   if (id) localStorage.setItem(CURRENT_USER_ID_KEY, id);
   else localStorage.removeItem(CURRENT_USER_ID_KEY);
@@ -38,7 +38,12 @@ export const apiLogin = (login: string, password: string) => {
   });
 };
 
-export const apiRegister = (data: { login: string; password: string; fullName: string; specialty: string }) => {
+export const apiRegister = (data: {
+  login: string;
+  password: string;
+  fullName: string;
+  specialty: string;
+}) => {
   return api<User>('/api/auth/register', {
     method: 'POST',
     body: JSON.stringify(data),
@@ -70,6 +75,7 @@ export const saveTest = (test: Test) => api<Test>('/api/tests', {
   body: JSON.stringify(test),
 });
 
+// Обновить существующий тест
 export const updateTest = (test: Test) => api<Test>(`/api/tests/${test.id}`, {
   method: 'PUT',
   body: JSON.stringify(test),
@@ -92,5 +98,14 @@ export const saveResult = (result: TestResult) => api<TestResult>('/api/results'
   body: JSON.stringify(result),
 });
 
-export const getResultsByUser = (userId: string) => api<TestResult[]>(`/api/results/user/${userId}`);
-export const getResultsByTest = (testId: string) => api<TestResult[]>(`/api/results/test/${testId}`);
+export const getResultsByUser = (userId: string) =>
+  api<TestResult[]>(`/api/results/user/${userId}`);
+
+export const getResultsByTest = (testId: string) =>
+  api<TestResult[]>(`/api/results/test/${testId}`);
+
+// Удалить результат для пересдачи
+export const deleteResultByUserAndTest = (userId: string, testId: string) =>
+  api<{ ok: true }>(`/api/results/user/${userId}/test/${testId}`, {
+    method: 'DELETE',
+  });
