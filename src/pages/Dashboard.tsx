@@ -169,19 +169,24 @@ const Dashboard: React.FC = () => {
                 const completed = results.some(r => r.testId === test.id);
                 const result = results.find(r => r.testId === test.id);
                 return (
-                  <div key={test.id} className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/10 hover:border-blue-400/30 transition-all">
-                    <h3 className="text-xl font-semibold text-white mb-2">{test.title}</h3>
-                    <p className="text-blue-300 text-sm mb-4">{test.description}</p>
-                    <div className="flex items-center gap-4 text-sm text-blue-400 mb-4">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {test.timeLimit} мин
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <FileText className="w-4 h-4" />
-                        {test.questions.length} вопросов
-                      </span>
+                  <div key={test.id} className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/10 hover:border-blue-400/30 transition-all flex flex-col h-full">
+                    {/* Верхняя часть – контент, занимает всё доступное место */}
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-white mb-2">{test.title}</h3>
+                      <p className="text-blue-300 text-sm mb-4">{test.description}</p>
+                      <div className="flex items-center gap-4 text-sm text-blue-400 mb-4">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {test.timeLimit} мин
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <FileText className="w-4 h-4" />
+                          {test.questions.length} вопросов
+                        </span>
+                      </div>
                     </div>
+                    
+                    {/* Нижняя часть – кнопка или блок результата всегда внизу */}
                     {completed ? (
                       <div className="space-y-3">
                         <div className="flex items-center gap-2 text-green-400">

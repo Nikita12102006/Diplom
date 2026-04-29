@@ -87,7 +87,7 @@ app.post('/api/auth/login', (req, res) => {
 
 app.post('/api/auth/register', (req, res) => {
   try {
-    const { login, password, fullName, specialty } = req.body;
+    const { login, password, fullName, specialty, age, education } = req.body;
     const users = readJSON<any>('users');
     const existingUser = users.find((u: any) => u.login === login);
     if (existingUser) {
@@ -99,6 +99,8 @@ app.post('/api/auth/register', (req, res) => {
       password,
       fullName,
       specialty,
+      age: age || null,
+      education: education || null,
       role: 'user'
     };
     users.push(newUser);

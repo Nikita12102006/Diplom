@@ -43,7 +43,7 @@ const Login: React.FC = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-4">
               <Wrench className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Тест АвтоСервиса</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">AutoService Test</h1>
             <p className="text-blue-200">Тестирование кандидатов автосервиса</p>
           </div>
 

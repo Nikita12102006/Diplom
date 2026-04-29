@@ -5,6 +5,8 @@ export interface User {
   fullName: string;
   specialty: string;
   role: 'user' | 'admin';
+  age?: number;
+  education?: string;
 }
 
 export interface Question {
@@ -20,7 +22,7 @@ export interface Test {
   description: string;
   specialty: string;
   questions: Question[];
-  timeLimit: number; // в минутах
+  timeLimit: number;
   createdAt: string;
 }
 
@@ -35,7 +37,7 @@ export interface TestResult {
   totalQuestions: number;
   correctAnswers: number;
   completedAt: string;
-  timeSpent: number; // в секундах
+  timeSpent: number;
 }
 
 export interface Specialty {
@@ -45,9 +47,16 @@ export interface Specialty {
 }
 
 export const SPECIALTIES: Specialty[] = [
-  { id: 'mechanic', name: 'Автомеханик', description: 'Диагностика и ремонт автомобилей' },
-  { id: 'electrician', name: 'Автоэлектрик', description: 'Ремонт электрооборудования автомобилей' },
-  { id: 'painter', name: 'Автомаляр', description: 'Покраска и кузовной ремонт' },
+  { id: 'mechanic', name: 'Автослесарь', description: 'Техническое обслуживание и ремонт автомобилей' },
   { id: 'diagnostician', name: 'Диагност', description: 'Компьютерная диагностика автомобилей' },
-  { id: 'tire_fitter', name: 'Шиномонтажник', description: 'Шиномонтаж и балансировка' },
+  { id: 'electrician', name: 'Автоэлектрик', description: 'Ремонт электрооборудования автомобилей' },
+  { id: 'order_receiver', name: 'Приемщик заказов на ремонт', description: 'Прием и оформление заказов на ремонт' },
+];
+
+export const EDUCATION_LEVELS = [
+  { id: 'secondary', name: 'Среднее общее' },
+  { id: 'secondary_vocational', name: 'Среднее профессиональное' },
+  { id: 'incomplete_higher', name: 'Неполное высшее' },
+  { id: 'higher', name: 'Высшее' },
+  { id: 'two_or_more_higher', name: 'Два и более высших' },
 ];

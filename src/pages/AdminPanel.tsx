@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -7,7 +5,7 @@ import {
   getTests, saveTest, deleteTest, updateTest,
   getResults, getUsers, deleteResultByUserAndTest
 } from '../services/storage';
-import { Test, TestResult, Question, SPECIALTIES } from '../types';
+import { Test, TestResult, Question, SPECIALTIES, EDUCATION_LEVELS } from '../types';
 import {
   LogOut, Plus, Trash2, FileText, Users, BarChart3,
   Clock, HelpCircle, X, Check, ChevronDown, ChevronUp,
@@ -47,7 +45,6 @@ const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tests' | 'results' | 'users'>('tests');
   const [loading, setLoading] = useState(true);
 
-  // Модальное окно (create или edit)
   const [showModal, setShowModal] = useState(false);
   const [editingTest, setEditingTest] = useState<Test | null>(null);
   const [expandedTest, setExpandedTest] = useState<string | null>(null);
@@ -78,7 +75,6 @@ const AdminPanel: React.FC = () => {
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
-  // Открыть модалку создания
   const openCreateModal = () => {
     setEditingTest(null);
     setForm(emptyForm);
@@ -86,7 +82,6 @@ const AdminPanel: React.FC = () => {
     setShowModal(true);
   };
 
-  // Открыть модалку редактирования
   const openEditModal = (test: Test) => {
     setEditingTest(test);
     setForm({
@@ -135,7 +130,6 @@ const AdminPanel: React.FC = () => {
     }
 
     if (editingTest) {
-      // Редактирование
       const updated: Test = {
         ...editingTest,
         title: form.title,
@@ -146,7 +140,6 @@ const AdminPanel: React.FC = () => {
       };
       await updateTest(updated);
     } else {
-      // Создание
       const test: Test = {
         id: uuidv4(),
         title: form.title,
@@ -163,7 +156,6 @@ const AdminPanel: React.FC = () => {
     closeModal();
   };
 
-  // Сброс результата пользователя (для пересдачи)
   const handleResetResult = async (userId: string, testId: string, userName: string) => {
     if (confirm(`Разрешить пересдачу для пользователя ${userName}?`)) {
       await deleteResultByUserAndTest(userId, testId);
@@ -176,7 +168,9 @@ const AdminPanel: React.FC = () => {
   const getAverageScore = (testId: string) => {
     const tr = getTestResults(testId);
     if (tr.length === 0) return 0;
-    return Math.round(tr.reduce((sum, r) => sum + (r.correctAnswers / r.totalQuestions) * 100, 0) / tr.length);
+    return Math.round(
+      tr.reduce((sum, r) => sum + (r.correctAnswers / r.totalQuestions) * 100, 0) / tr.length
+    );
   };
 
   if (!user || loading) {
@@ -189,6 +183,7 @@ const AdminPanel: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+
       {/* Header */}
       <header className="bg-white/10 backdrop-blur-lg border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -212,6 +207,7 @@ const AdminPanel: React.FC = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
+
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
@@ -248,7 +244,9 @@ const AdminPanel: React.FC = () => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                activeTab === tab ? 'bg-blue-500 text-white' : 'bg-white/10 text-blue-300 hover:bg-white/20'
+                activeTab === tab
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white/10 text-blue-300 hover:bg-white/20'
               }`}
             >
               {tab === 'tests' ? 'Тесты' : tab === 'results' ? 'Результаты' : 'Пользователи'}
@@ -256,7 +254,7 @@ const AdminPanel: React.FC = () => {
           ))}
         </div>
 
-        {/* ТЕСТЫ */}
+        {/* ===== ТЕСТЫ ===== */}
         {activeTab === 'tests' && (
           <div>
             <div className="flex justify-between items-center mb-6">
@@ -278,7 +276,10 @@ const AdminPanel: React.FC = () => {
                 </div>
               ) : (
                 tests.map((test) => (
-                  <div key={test.id} className="bg-white/10 backdrop-blur rounded-xl border border-white/10 overflow-hidden">
+                  <div
+                    key={test.id}
+                    className="bg-white/10 backdrop-blur rounded-xl border border-white/10 overflow-hidden"
+                  >
                     <div
                       className="p-6 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
                       onClick={() => setExpandedTest(expandedTest === test.id ? null : test.id)}
@@ -287,15 +288,24 @@ const AdminPanel: React.FC = () => {
                         <h3 className="text-xl font-semibold text-white">{test.title}</h3>
                         <p className="text-blue-300 text-sm mt-1">{test.description}</p>
                         <div className="flex items-center gap-4 mt-3 text-sm text-blue-400">
-                          <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{test.timeLimit} мин</span>
-                          <span className="flex items-center gap-1"><HelpCircle className="w-4 h-4" />{test.questions.length} вопросов</span>
-                          <span className="px-2 py-1 bg-blue-500/20 rounded text-xs">{getSpecialtyName(test.specialty)}</span>
-                          <span className="flex items-center gap-1"><Users className="w-4 h-4" />{getTestResults(test.id).length} прохождений</span>
-                          <span className="flex items-center gap-1"><Award className="w-4 h-4" />Средний: {getAverageScore(test.id)}%</span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />{test.timeLimit} мин
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <HelpCircle className="w-4 h-4" />{test.questions.length} вопросов
+                          </span>
+                          <span className="px-2 py-1 bg-blue-500/20 rounded text-xs">
+                            {getSpecialtyName(test.specialty)}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />{getTestResults(test.id).length} прохождений
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Award className="w-4 h-4" />Средний: {getAverageScore(test.id)}%
+                          </span>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        {/* Кнопка редактирования */}
                         <button
                           onClick={(e) => { e.stopPropagation(); openEditModal(test); }}
                           className="p-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-colors"
@@ -303,7 +313,6 @@ const AdminPanel: React.FC = () => {
                         >
                           <Edit className="w-5 h-5" />
                         </button>
-                        {/* Кнопка удаления */}
                         <button
                           onClick={(e) => { e.stopPropagation(); handleDeleteTest(test.id); }}
                           className="p-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors"
@@ -330,7 +339,9 @@ const AdminPanel: React.FC = () => {
                                   <div
                                     key={optIndex}
                                     className={`flex items-center gap-2 p-2 rounded ${
-                                      optIndex === q.correctAnswer ? 'bg-green-500/20 text-green-300' : 'text-blue-300'
+                                      optIndex === q.correctAnswer
+                                        ? 'bg-green-500/20 text-green-300'
+                                        : 'text-blue-300'
                                     }`}
                                   >
                                     {optIndex === q.correctAnswer && <Check className="w-4 h-4" />}
@@ -350,7 +361,7 @@ const AdminPanel: React.FC = () => {
           </div>
         )}
 
-        {/* РЕЗУЛЬТАТЫ */}
+        {/* ===== РЕЗУЛЬТАТЫ ===== */}
         {activeTab === 'results' && (
           <div>
             <h2 className="text-2xl font-bold text-white mb-6">Результаты тестирования</h2>
@@ -364,11 +375,16 @@ const AdminPanel: React.FC = () => {
                 {results
                   .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime())
                   .map((result) => (
-                    <div key={result.id} className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/10">
+                    <div
+                      key={result.id}
+                      className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/10"
+                    >
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="text-lg font-semibold text-white">{result.testTitle}</h3>
-                          <p className="text-blue-300 text-sm">{result.userName} • {getSpecialtyName(result.specialty)}</p>
+                          <p className="text-blue-300 text-sm">
+                            {result.userName} • {getSpecialtyName(result.specialty)}
+                          </p>
                           <p className="text-blue-400 text-xs mt-1">
                             {new Date(result.completedAt).toLocaleDateString('ru-RU', {
                               day: '2-digit', month: 'long', year: 'numeric',
@@ -379,13 +395,16 @@ const AdminPanel: React.FC = () => {
                         <div className="flex items-center gap-4">
                           <div className="text-right">
                             <p className={`text-2xl font-bold ${
-                              (result.correctAnswers / result.totalQuestions) >= 0.7 ? 'text-green-400' : 'text-orange-400'
+                              (result.correctAnswers / result.totalQuestions) >= 0.7
+                                ? 'text-green-400'
+                                : 'text-orange-400'
                             }`}>
                               {Math.round((result.correctAnswers / result.totalQuestions) * 100)}%
                             </p>
-                            <p className="text-blue-400 text-sm">{result.correctAnswers} из {result.totalQuestions}</p>
+                            <p className="text-blue-400 text-sm">
+                              {result.correctAnswers} из {result.totalQuestions}
+                            </p>
                           </div>
-                          {/* Кнопка разрешить пересдачу */}
                           <button
                             onClick={() => handleResetResult(result.userId, result.testId, result.userName)}
                             className="flex items-center gap-2 px-3 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 rounded-lg transition-colors text-sm"
@@ -403,7 +422,7 @@ const AdminPanel: React.FC = () => {
           </div>
         )}
 
-        {/* ПОЛЬЗОВАТЕЛИ */}
+        {/* ===== ПОЛЬЗОВАТЕЛИ ===== */}
         {activeTab === 'users' && (
           <div>
             <h2 className="text-2xl font-bold text-white mb-6">Пользователи</h2>
@@ -417,16 +436,39 @@ const AdminPanel: React.FC = () => {
                 {users.map((u) => {
                   const userResults = results.filter(r => r.userId === u.id);
                   const avgScore = userResults.length > 0
-                    ? Math.round(userResults.reduce((sum, r) => sum + (r.correctAnswers / r.totalQuestions) * 100, 0) / userResults.length)
+                    ? Math.round(
+                        userResults.reduce(
+                          (sum, r) => sum + (r.correctAnswers / r.totalQuestions) * 100, 0
+                        ) / userResults.length
+                      )
                     : 0;
+
                   return (
-                    <div key={u.id} className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/10">
+                    <div
+                      key={u.id}
+                      className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/10"
+                    >
                       <h3 className="text-lg font-semibold text-white">{u.fullName}</h3>
                       <p className="text-blue-300 text-sm">{getSpecialtyName(u.specialty)}</p>
+
                       <div className="mt-4 space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-blue-400">Логин:</span>
                           <span className="text-white">{u.login}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-blue-400">Возраст:</span>
+                          <span className="text-white">
+                            {u.age ? `${u.age} лет` : 'Не указан'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-blue-400">Образование:</span>
+                          <span className="text-white text-right">
+                            {u.education
+                              ? EDUCATION_LEVELS.find((e) => e.id === u.education)?.name || u.education
+                              : 'Не указано'}
+                          </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-blue-400">Пройдено тестов:</span>
@@ -434,20 +476,23 @@ const AdminPanel: React.FC = () => {
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-blue-400">Средний результат:</span>
-                          <span className={`font-semibold ${avgScore >= 70 ? 'text-green-400' : 'text-orange-400'}`}>
+                          <span className={`font-semibold ${
+                            avgScore >= 70 ? 'text-green-400' : 'text-orange-400'
+                          }`}>
                             {avgScore}%
                           </span>
                         </div>
                       </div>
 
-                      {/* Пересдача по конкретному тесту */}
                       {userResults.length > 0 && (
                         <div className="mt-4 border-t border-white/10 pt-4">
                           <p className="text-blue-300 text-xs mb-2">Разрешить пересдачу:</p>
                           <div className="space-y-1">
                             {userResults.map((r) => (
                               <div key={r.id} className="flex items-center justify-between">
-                                <span className="text-white text-xs truncate max-w-[150px]">{r.testTitle}</span>
+                                <span className="text-white text-xs truncate max-w-[150px]">
+                                  {r.testTitle}
+                                </span>
                                 <button
                                   onClick={() => handleResetResult(u.id, r.testId, u.fullName)}
                                   className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 rounded text-xs transition-colors"
@@ -467,9 +512,10 @@ const AdminPanel: React.FC = () => {
             )}
           </div>
         )}
+
       </main>
 
-      {/* Модальное окно создания/редактирования теста */}
+      {/* ===== МОДАЛЬНОЕ ОКНО ===== */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-slate-800 rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-white/10">
@@ -477,16 +523,20 @@ const AdminPanel: React.FC = () => {
               <h2 className="text-2xl font-bold text-white">
                 {editingTest ? 'Редактирование теста' : 'Создание нового теста'}
               </h2>
-              <button onClick={closeModal} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+              <button
+                onClick={closeModal}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
                 <X className="w-6 h-6 text-blue-300" />
               </button>
             </div>
 
             <div className="p-6 space-y-6">
-              {/* Основная информация */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-blue-300 mb-2">Название теста</label>
+                  <label className="block text-sm font-medium text-blue-300 mb-2">
+                    Название теста
+                  </label>
                   <input
                     type="text"
                     value={form.title}
@@ -496,7 +546,9 @@ const AdminPanel: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-blue-300 mb-2">Специальность</label>
+                  <label className="block text-sm font-medium text-blue-300 mb-2">
+                    Специальность
+                  </label>
                   <select
                     value={form.specialty}
                     onChange={(e) => setForm({ ...form, specialty: e.target.value })}
@@ -504,7 +556,9 @@ const AdminPanel: React.FC = () => {
                   >
                     <option value="" className="bg-slate-800">Выберите специальность</option>
                     {SPECIALTIES.map((spec) => (
-                      <option key={spec.id} value={spec.id} className="bg-slate-800">{spec.name}</option>
+                      <option key={spec.id} value={spec.id} className="bg-slate-800">
+                        {spec.name}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -521,7 +575,9 @@ const AdminPanel: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-blue-300 mb-2">Время на прохождение (минут)</label>
+                <label className="block text-sm font-medium text-blue-300 mb-2">
+                  Время на прохождение (минут)
+                </label>
                 <input
                   type="number"
                   min={5}
@@ -532,9 +588,10 @@ const AdminPanel: React.FC = () => {
                 />
               </div>
 
-              {/* Список вопросов */}
               <div>
-                <h3 className="text-lg font-semibold text-white mb-4">Вопросы ({form.questions.length})</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">
+                  Вопросы ({form.questions.length})
+                </h3>
 
                 {form.questions.length > 0 && (
                   <div className="space-y-3 mb-6">
@@ -553,7 +610,9 @@ const AdminPanel: React.FC = () => {
                           {q.options.map((option, optIndex) => (
                             <p
                               key={optIndex}
-                              className={`text-sm ${optIndex === q.correctAnswer ? 'text-green-400' : 'text-blue-300'}`}
+                              className={`text-sm ${
+                                optIndex === q.correctAnswer ? 'text-green-400' : 'text-blue-300'
+                              }`}
                             >
                               {optIndex === q.correctAnswer && '✓ '}{option}
                             </p>
@@ -564,12 +623,13 @@ const AdminPanel: React.FC = () => {
                   </div>
                 )}
 
-                {/* Форма добавления вопроса */}
                 <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                   <h4 className="text-md font-semibold text-white mb-4">Добавить вопрос</h4>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-blue-300 mb-2">Текст вопроса</label>
+                      <label className="block text-sm font-medium text-blue-300 mb-2">
+                        Текст вопроса
+                      </label>
                       <input
                         type="text"
                         value={newQuestion.text}
@@ -627,7 +687,6 @@ const AdminPanel: React.FC = () => {
               </div>
             </div>
 
-            {/* Футер модалки */}
             <div className="sticky bottom-0 bg-slate-800 border-t border-white/10 p-6 flex justify-end gap-4">
               <button
                 onClick={closeModal}
@@ -647,6 +706,7 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

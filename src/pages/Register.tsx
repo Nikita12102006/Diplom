@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff, User, Briefcase } from 'lucide-react';
-import { SPECIALTIES } from '../types';
+import { Eye, EyeOff, User, Briefcase, GraduationCap, Calendar } from 'lucide-react';
+import { SPECIALTIES, EDUCATION_LEVELS } from '../types';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +12,9 @@ const Register: React.FC = () => {
     password: '',
     confirmPassword: '',
     fullName: '',
-    specialty: ''
+    specialty: '',
+    age: '',
+    education: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -23,8 +25,21 @@ const Register: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    if (!formData.login.trim() || !formData.password.trim() || !formData.fullName.trim() || !formData.specialty) {
+    if (
+      !formData.login.trim() ||
+      !formData.password.trim() ||
+      !formData.fullName.trim() ||
+      !formData.specialty ||
+      !formData.age ||
+      !formData.education
+    ) {
       setError('Заполните все поля');
+      return;
+    }
+
+    const age = parseInt(formData.age);
+    if (isNaN(age) || age < 16 || age > 80) {
+      setError('Возраст должен быть от 16 до 80 лет');
       return;
     }
 
@@ -43,7 +58,9 @@ const Register: React.FC = () => {
       login: formData.login.trim(),
       password: formData.password,
       fullName: formData.fullName.trim(),
-      specialty: formData.specialty
+      specialty: formData.specialty,
+      age,
+      education: formData.education
     });
     setIsLoading(false);
 
@@ -73,6 +90,7 @@ const Register: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Полное имя */}
             <div>
               <label className="block text-sm font-medium text-blue-200 mb-2">
                 <User className="w-4 h-4 inline mr-2" />
@@ -87,25 +105,64 @@ const Register: React.FC = () => {
               />
             </div>
 
+            {/* Возраст и Специальность в одну строку */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-blue-200 mb-2">
+                  <Calendar className="w-4 h-4 inline mr-2" />
+                  Возраст
+                </label>
+                <input
+                  type="number"
+                  min={16}
+                  max={80}
+                  value={formData.age}
+                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  placeholder="25"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-blue-200 mb-2">
+                  <Briefcase className="w-4 h-4 inline mr-2" />
+                  Специальность
+                </label>
+                <select
+                  value={formData.specialty}
+                  onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent appearance-none cursor-pointer"
+                >
+                  <option value="" className="bg-slate-800">Выберите</option>
+                  {SPECIALTIES.map((spec) => (
+                    <option key={spec.id} value={spec.id} className="bg-slate-800">
+                      {spec.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Образование */}
             <div>
               <label className="block text-sm font-medium text-blue-200 mb-2">
-                <Briefcase className="w-4 h-4 inline mr-2" />
-                Специальность
+                <GraduationCap className="w-4 h-4 inline mr-2" />
+                Образование
               </label>
               <select
-                value={formData.specialty}
-                onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
+                value={formData.education}
+                onChange={(e) => setFormData({ ...formData, education: e.target.value })}
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent appearance-none cursor-pointer"
               >
-                <option value="" className="bg-slate-800">Выберите специальность</option>
-                {SPECIALTIES.map((spec) => (
-                  <option key={spec.id} value={spec.id} className="bg-slate-800">
-                    {spec.name}
+                <option value="" className="bg-slate-800">Выберите уровень образования</option>
+                {EDUCATION_LEVELS.map((edu) => (
+                  <option key={edu.id} value={edu.id} className="bg-slate-800">
+                    {edu.name}
                   </option>
                 ))}
               </select>
             </div>
 
+            {/* Логин */}
             <div>
               <label className="block text-sm font-medium text-blue-200 mb-2">Логин</label>
               <input
@@ -117,6 +174,7 @@ const Register: React.FC = () => {
               />
             </div>
 
+            {/* Пароль */}
             <div>
               <label className="block text-sm font-medium text-blue-200 mb-2">Пароль</label>
               <div className="relative">
@@ -137,6 +195,7 @@ const Register: React.FC = () => {
               </div>
             </div>
 
+            {/* Подтверждение пароля */}
             <div>
               <label className="block text-sm font-medium text-blue-200 mb-2">Подтвердите пароль</label>
               <div className="relative">

@@ -25,6 +25,8 @@ export interface RegisterData {
   password: string;
   fullName: string;
   specialty: string;
+  age?: number;
+  education?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

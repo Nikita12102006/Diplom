@@ -14,5 +14,33 @@
     "fullName": "Гусенков Никита Алексеевич",
     "specialty": "mechanic",
     "role": "user"
+  },
+  {
+    "id": "user-1777304877855",
+    "login": "diagnost@gmail.com",
+    "password": "741852963",
+    "fullName": "Гусенков Никита Алексеевич",
+    "specialty": "diagnostician",
+    "role": "user"
+  },
+  {
+    "id": "user-1777446346278",
+    "login": "priemhik@gmail.com",
+    "password": "741852963",
+    "fullName": "Гусенков Никита Алексеевич",
+    "specialty": "order_receiver",
+    "age": 25,
+    "education": "secondary_vocational",
+    "role": "user"
+  },
+  {
+    "id": "user-1777452512702",
+    "login": "electric@gmail.com",
+    "password": "741852963",
+    "fullName": "Michael Jordan",
+    "specialty": "electrician",
+    "age": 25,
+    "education": "secondary_vocational",
+    "role": "user"
   }
 ]

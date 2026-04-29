@@ -20,7 +20,6 @@ async function api<T>(url: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T;
 }
 
-// ===== session =====
 export const setCurrentUserId = (id: string | null) => {
   if (id) localStorage.setItem(CURRENT_USER_ID_KEY, id);
   else localStorage.removeItem(CURRENT_USER_ID_KEY);
@@ -30,7 +29,6 @@ export const getCurrentUserId = (): string | null => {
   return localStorage.getItem(CURRENT_USER_ID_KEY);
 };
 
-// ===== auth =====
 export const apiLogin = (login: string, password: string) => {
   return api<User>('/api/auth/login', {
     method: 'POST',
@@ -43,6 +41,8 @@ export const apiRegister = (data: {
   password: string;
   fullName: string;
   specialty: string;
+  age?: number;
+  education?: string;
 }) => {
   return api<User>('/api/auth/register', {
     method: 'POST',
@@ -50,7 +50,6 @@ export const apiRegister = (data: {
   });
 };
 
-// ===== users =====
 export const getUsers = () => api<User[]>('/api/users');
 export const getUserById = (id: string) => api<User>(`/api/users/${id}`);
 
@@ -58,6 +57,8 @@ export const updateUserProfile = (id: string, data: {
   login?: string;
   fullName?: string;
   specialty?: string;
+  age?: number;
+  education?: string;
   currentPassword?: string;
   newPassword?: string;
 }) => {
@@ -67,7 +68,6 @@ export const updateUserProfile = (id: string, data: {
   });
 };
 
-// ===== tests =====
 export const getTests = () => api<Test[]>('/api/tests');
 
 export const saveTest = (test: Test) => api<Test>('/api/tests', {
@@ -75,7 +75,6 @@ export const saveTest = (test: Test) => api<Test>('/api/tests', {
   body: JSON.stringify(test),
 });
 
-// Обновить существующий тест
 export const updateTest = (test: Test) => api<Test>(`/api/tests/${test.id}`, {
   method: 'PUT',
   body: JSON.stringify(test),
@@ -90,7 +89,6 @@ export const getTestsBySpecialty = async (specialty: string) => {
   return tests.filter(t => t.specialty === specialty);
 };
 
-// ===== results =====
 export const getResults = () => api<TestResult[]>('/api/results');
 
 export const saveResult = (result: TestResult) => api<TestResult>('/api/results', {
@@ -104,7 +102,6 @@ export const getResultsByUser = (userId: string) =>
 export const getResultsByTest = (testId: string) =>
   api<TestResult[]>(`/api/results/test/${testId}`);
 
-// Удалить результат для пересдачи
 export const deleteResultByUserAndTest = (userId: string, testId: string) =>
   api<{ ok: true }>(`/api/results/user/${userId}/test/${testId}`, {
     method: 'DELETE',
