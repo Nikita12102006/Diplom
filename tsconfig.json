@@ -5,7 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["node"],
+    "types": ["node", "jest", "@testing-library/jest-dom"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -15,11 +15,15 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Path mapping */
+    /* Пути (для алиасов) */
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
+
+    /* Дополнительные опции для совместимости с Jest и ESM */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     /* Linting */
     "strict": true,
@@ -27,5 +31,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "vite.config.ts"]
+  "include": [
+    "src",
+    "server",
+    "vite.config.ts"
+  ]
 }

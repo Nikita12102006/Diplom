@@ -44,5 +44,65 @@
     "age": 25,
     "education": "secondary_vocational",
     "role": "user"
+  },
+  {
+    "id": "user-1778074781646",
+    "login": "test_1778074781618",
+    "password": "123456",
+    "fullName": "Тестовый Пользователь",
+    "specialty": "mechanic",
+    "age": 30,
+    "education": "Высшее",
+    "role": "user"
+  },
+  {
+    "id": "user-1778075161316",
+    "login": "test_1778075161295",
+    "password": "123456",
+    "fullName": "Тестовый Пользователь",
+    "specialty": "mechanic",
+    "age": 30,
+    "education": "Высшее",
+    "role": "user"
+  },
+  {
+    "id": "user-1778075416031",
+    "login": "test_1778075416010",
+    "password": "123456",
+    "fullName": "Тестовый Пользователь",
+    "specialty": "mechanic",
+    "age": 30,
+    "education": "Высшее",
+    "role": "user"
+  },
+  {
+    "id": "user-1778076225016",
+    "login": "updated_testuser_1778076224990",
+    "password": "testpass",
+    "fullName": "Updated Name",
+    "specialty": "mechanic",
+    "age": 30,
+    "education": "Высшее техническое",
+    "role": "user"
+  },
+  {
+    "id": "user-1778076225152",
+    "login": "resultuser_1778076225145",
+    "password": "pass",
+    "fullName": "Result User",
+    "specialty": "electrician",
+    "age": null,
+    "education": null,
+    "role": "user"
+  },
+  {
+    "id": "user-1778076225450",
+    "login": "test_1778076225440",
+    "password": "123456",
+    "fullName": "Тестовый Пользователь",
+    "specialty": "mechanic",
+    "age": 30,
+    "education": "Высшее",
+    "role": "user"
   }
 ]
