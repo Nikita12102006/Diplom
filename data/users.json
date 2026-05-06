@@ -13,7 +13,9 @@
     "password": "741852963",
     "fullName": "Гусенков Никита Алексеевич",
     "specialty": "mechanic",
-    "role": "user"
+    "role": "user",
+    "age": 30,
+    "education": "secondary"
   },
   {
     "id": "user-1777304877855",
