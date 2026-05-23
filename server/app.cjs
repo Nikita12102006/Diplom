@@ -80,19 +80,31 @@ app.post('/api/auth/login', (req, res) => {
 
 app.post('/api/auth/register', (req, res) => {
   try {
-    const { login, password, fullName, specialty, age, education } = req.body;
+    const { login, password, fullName, specialty, dateOfBirth, education } = req.body;
     const users = readJSON('users');
     const existingUser = users.find(u => u.login === login);
     if (existingUser) {
       return res.status(400).json({ error: 'Пользователь с таким логином уже существует' });
     }
+
+    if (dateOfBirth) {
+      const birthDate = new Date(dateOfBirth);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      if (age < 16) {
+        return res.status(400).json({ error: 'Возраст должен быть не менее 16 лет' });
+      }
+    }
+
     const newUser = {
       id: `user-${Date.now()}`,
       login,
       password,
       fullName,
       specialty,
-      age: age || null,
+      dateOfBirth: dateOfBirth || null,   // <-- замена age
       education: education || null,
       role: 'user',
     };
@@ -128,13 +140,14 @@ app.get('/api/users/:id', (req, res) => {
 app.patch('/api/users/:id', (req, res) => {
   try {
     const { id } = req.params;
-    const { fullName, specialty, login, age, education, currentPassword, newPassword } = req.body;
+    const { fullName, specialty, login, dateOfBirth, education, currentPassword, newPassword } = req.body;
     const users = readJSON('users');
     const index = users.findIndex(u => u.id === id);
     if (index === -1) {
       return res.status(404).json({ error: 'Пользователь не найден' });
     }
 
+    // Проверка пароля, если меняется
     if (newPassword) {
       if (users[index].password !== currentPassword) {
         return res.status(400).json({ error: 'Неверный текущий пароль' });
@@ -142,10 +155,11 @@ app.patch('/api/users/:id', (req, res) => {
       users[index].password = newPassword;
     }
 
+    // Обновление полей
     if (fullName !== undefined) users[index].fullName = fullName;
     if (specialty !== undefined) users[index].specialty = specialty;
     if (login !== undefined) users[index].login = login;
-    if (age !== undefined) users[index].age = age;
+    if (dateOfBirth !== undefined) users[index].dateOfBirth = dateOfBirth;   // <-- замена
     if (education !== undefined) users[index].education = education;
 
     writeJSON('users', users);

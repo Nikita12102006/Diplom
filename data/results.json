@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "id": "9d6a8b02-e2b2-4f5b-883b-6796f0c5e5e9",
+    "userId": "user-1776959970402",
+    "testId": "test-mechanic-gaz-1",
+    "testTitle": "Основы технического обслуживания автомобилей ГАЗ",
+    "userName": "Гусенков Никита Алексеевич",
+    "specialty": "mechanic",
+    "score": 80,
+    "totalQuestions": 20,
+    "correctAnswers": 16,
+    "completedAt": "2026-05-06T15:16:36.299Z",
+    "timeSpent": 226
+  },
+  {
+    "id": "c3080ff0-207f-43f5-ae2f-5d586ed4283a",
+    "userId": "user-1777452512702",
+    "testId": "test-electrician-gaz-1",
+    "testTitle": "Основы электрооборудования автомобилей ГАЗ",
+    "userName": "Michael Jordan",
+    "specialty": "electrician",
+    "score": 0,
+    "totalQuestions": 20,
+    "correctAnswers": 0,
+    "completedAt": "2026-05-12T13:22:27.809Z",
+    "timeSpent": 16
+  }
+]

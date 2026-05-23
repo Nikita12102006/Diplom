@@ -12,11 +12,11 @@ const Profile: React.FC = () => {
     fullName: user?.fullName || '',
     specialty: user?.specialty || '',
     login: user?.login || '',
-    age: user?.age?.toString() || '',
+    dateOfBirth: user?.dateOfBirth || '',
     education: user?.education || '',
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState('');
@@ -31,15 +31,27 @@ const Profile: React.FC = () => {
   const getSpecialtyName = (id: string) => SPECIALTIES.find(s => s.id === id)?.name || id;
   const getEducationName = (id: string) => EDUCATION_LEVELS.find(e => e.id === id)?.name || id;
 
+  // Форматирование даты для отображения
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return 'Не указана';
+    const [year, month, day] = dateStr.split('-');
+    return `${day}.${month}.${year}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setMessage('');
 
-    if (formData.age) {
-      const age = parseInt(formData.age);
-      if (isNaN(age) || age < 16 || age > 80) {
-        setError('Возраст должен быть от 16 до 80 лет');
+    // Валидация даты рождения (необязательная, но полезная)
+    if (formData.dateOfBirth) {
+      const birthDate = new Date(formData.dateOfBirth);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      if (age < 16) {
+        setError('Возраст должен быть не менее 16 лет');
         return;
       }
     }
@@ -60,17 +72,16 @@ const Profile: React.FC = () => {
         fullName: formData.fullName,
         specialty: formData.specialty,
         login: formData.login,
-        age: formData.age ? parseInt(formData.age) : undefined,
+        dateOfBirth: formData.dateOfBirth || undefined,
         education: formData.education,
-        ...(formData.newPassword ? {
-          currentPassword: formData.currentPassword,
-          newPassword: formData.newPassword
-        } : {})
+        ...(formData.newPassword
+          ? { currentPassword: formData.currentPassword, newPassword: formData.newPassword }
+          : {}),
       });
       setUser(updatedUser);
-      setMessage('Профиль успешно обновлен');
+      setMessage('Профиль успешно обновлён');
       setIsEditing(false);
-      setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
+      setFormData((prev) => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
       setTimeout(() => setMessage(''), 3000);
     } catch (err: any) {
       setError(err.message || 'Ошибка обновления профиля');
@@ -79,14 +90,20 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       <header className="bg-white/10 backdrop-blur-lg border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/dashboard')} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
               <ArrowLeft className="w-5 h-5 text-blue-300" />
             </button>
             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
@@ -148,38 +165,23 @@ const Profile: React.FC = () => {
                 />
               </div>
 
-              {/* Возраст и Специальность */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-blue-200 mb-2">
-                    <Calendar className="w-4 h-4 inline mr-2" />
-                    Возраст
-                  </label>
-                  <input
-                    type="number"
-                    min={16}
-                    max={80}
-                    value={formData.age}
-                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    placeholder="25"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-blue-200 mb-2">
-                    <Briefcase className="w-4 h-4 inline mr-2" />
-                    Специальность
-                  </label>
-                  <select
-                    value={formData.specialty}
-                    onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
-                  >
-                    {SPECIALTIES.map((spec) => (
-                      <option key={spec.id} value={spec.id} className="bg-slate-800">{spec.name}</option>
-                    ))}
-                  </select>
-                </div>
+              {/* Специальность */}
+              <div>
+                <label className="block text-sm font-medium text-blue-200 mb-2">
+                  <Briefcase className="w-4 h-4 inline mr-2" />
+                  Специальность
+                </label>
+                <select
+                  value={formData.specialty}
+                  onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                >
+                  {SPECIALTIES.map((spec) => (
+                    <option key={spec.id} value={spec.id} className="bg-slate-800">
+                      {spec.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Образование */}
@@ -195,9 +197,25 @@ const Profile: React.FC = () => {
                 >
                   <option value="" className="bg-slate-800">Выберите уровень образования</option>
                   {EDUCATION_LEVELS.map((edu) => (
-                    <option key={edu.id} value={edu.id} className="bg-slate-800">{edu.name}</option>
+                    <option key={edu.id} value={edu.id} className="bg-slate-800">
+                      {edu.name}
+                    </option>
                   ))}
                 </select>
+              </div>
+
+              {/* Дата рождения */}
+              <div>
+                <label className="block text-sm font-medium text-blue-200 mb-2">
+                  <Calendar className="w-4 h-4 inline mr-2" />
+                  Дата рождения
+                </label>
+                <input
+                  type="date"
+                  value={formData.dateOfBirth}
+                  onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
               </div>
 
               {/* Логин */}
@@ -248,7 +266,6 @@ const Profile: React.FC = () => {
                 </div>
               </div>
 
-              {/* Кнопки */}
               <div className="flex gap-4 pt-2">
                 <button
                   type="button"
@@ -259,11 +276,11 @@ const Profile: React.FC = () => {
                       fullName: user.fullName,
                       specialty: user.specialty,
                       login: user.login,
-                      age: user.age?.toString() || '',
+                      dateOfBirth: user.dateOfBirth || '',
                       education: user.education || '',
                       currentPassword: '',
                       newPassword: '',
-                      confirmPassword: ''
+                      confirmPassword: '',
                     });
                   }}
                   className="flex-1 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
@@ -288,8 +305,8 @@ const Profile: React.FC = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white/5 rounded-lg p-4">
-                  <p className="text-blue-300 text-sm mb-1">Возраст</p>
-                  <p className="text-white text-lg">{user.age ? `${user.age} лет` : 'Не указан'}</p>
+                  <p className="text-blue-300 text-sm mb-1">Дата рождения</p>
+                  <p className="text-white text-lg">{formatDate(user.dateOfBirth)}</p>
                 </div>
                 <div className="bg-white/5 rounded-lg p-4">
                   <p className="text-blue-300 text-sm mb-1">Специальность</p>

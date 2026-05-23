@@ -23,7 +23,9 @@
     "password": "741852963",
     "fullName": "Гусенков Никита Алексеевич",
     "specialty": "diagnostician",
-    "role": "user"
+    "role": "user",
+    "dateOfBirth": "2000-02-09",
+    "education": "higher"
   },
   {
     "id": "user-1777446346278",
@@ -46,63 +48,73 @@
     "role": "user"
   },
   {
-    "id": "user-1778074781646",
-    "login": "test_1778074781618",
-    "password": "123456",
-    "fullName": "Тестовый Пользователь",
-    "specialty": "mechanic",
-    "age": 30,
-    "education": "Высшее",
-    "role": "user"
-  },
-  {
-    "id": "user-1778075161316",
-    "login": "test_1778075161295",
-    "password": "123456",
-    "fullName": "Тестовый Пользователь",
-    "specialty": "mechanic",
-    "age": 30,
-    "education": "Высшее",
-    "role": "user"
-  },
-  {
-    "id": "user-1778075416031",
-    "login": "test_1778075416010",
-    "password": "123456",
-    "fullName": "Тестовый Пользователь",
-    "specialty": "mechanic",
-    "age": 30,
-    "education": "Высшее",
-    "role": "user"
-  },
-  {
-    "id": "user-1778076225016",
-    "login": "updated_testuser_1778076224990",
+    "id": "user-1779547075091",
+    "login": "updated_testuser_1779547075058",
     "password": "testpass",
     "fullName": "Updated Name",
     "specialty": "mechanic",
-    "age": 30,
+    "dateOfBirth": "1985-10-15",
     "education": "Высшее техническое",
     "role": "user"
   },
   {
-    "id": "user-1778076225152",
-    "login": "resultuser_1778076225145",
+    "id": "user-1779547154887",
+    "login": "test_1779547154858",
+    "password": "123456",
+    "fullName": "Тестовый Пользователь",
+    "specialty": "mechanic",
+    "dateOfBirth": null,
+    "education": "Высшее",
+    "role": "user"
+  },
+  {
+    "id": "user-1779547155032",
+    "login": "resultuser_1779547155023",
     "password": "pass",
     "fullName": "Result User",
     "specialty": "electrician",
-    "age": null,
+    "dateOfBirth": null,
     "education": null,
     "role": "user"
   },
   {
-    "id": "user-1778076225450",
-    "login": "test_1778076225440",
+    "id": "user-1779547155357",
+    "login": "updated_testuser_1779547155347",
+    "password": "testpass",
+    "fullName": "Updated Name",
+    "specialty": "mechanic",
+    "dateOfBirth": "1985-10-15",
+    "education": "Высшее техническое",
+    "role": "user"
+  },
+  {
+    "id": "user-1779547165375",
+    "login": "test_1779547165343",
     "password": "123456",
     "fullName": "Тестовый Пользователь",
     "specialty": "mechanic",
-    "age": 30,
+    "dateOfBirth": "1990-05-20",
     "education": "Высшее",
+    "role": "user"
+  },
+  {
+    "id": "user-1779547165630",
+    "login": "resultuser_1779547165624",
+    "password": "pass",
+    "fullName": "Result User",
+    "specialty": "electrician",
+    "dateOfBirth": null,
+    "education": null,
+    "role": "user"
+  },
+  {
+    "id": "user-1779547165764",
+    "login": "updated_testuser_1779547165753",
+    "password": "testpass",
+    "fullName": "Updated Name",
+    "specialty": "mechanic",
+    "dateOfBirth": "1985-10-15",
+    "education": "Высшее техническое",
     "role": "user"
   }
 ]

@@ -36,12 +36,13 @@ export const apiLogin = (login: string, password: string) => {
   });
 };
 
+// Регистрация – вместо age используем dateOfBirth
 export const apiRegister = (data: {
   login: string;
   password: string;
   fullName: string;
   specialty: string;
-  age?: number;
+  dateOfBirth?: string;  
   education?: string;
 }) => {
   return api<User>('/api/auth/register', {
@@ -53,11 +54,12 @@ export const apiRegister = (data: {
 export const getUsers = () => api<User[]>('/api/users');
 export const getUserById = (id: string) => api<User>(`/api/users/${id}`);
 
+// Обновление профиля – вместо age используем dateOfBirth
 export const updateUserProfile = (id: string, data: {
   login?: string;
   fullName?: string;
   specialty?: string;
-  age?: number;
+  dateOfBirth?: string;  
   education?: string;
   currentPassword?: string;
   newPassword?: string;

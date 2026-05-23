@@ -6,7 +6,6 @@ describe('Users API', () => {
   const uniqueLogin = `testuser_${Date.now()}`;
 
   beforeAll(async () => {
-    // Создаём тестового пользователя
     const res = await request(app)
       .post('/api/auth/register')
       .send({
@@ -14,7 +13,7 @@ describe('Users API', () => {
         password: 'testpass',
         fullName: 'Test User',
         specialty: 'mechanic',
-        age: 25,
+        dateOfBirth: '1990-05-20',
         education: 'Среднее',
       });
     testUserId = res.body.id;
@@ -34,15 +33,15 @@ describe('Users API', () => {
     expect(res.body.login).toBe(uniqueLogin);
   });
 
-  test('PATCH /api/users/:id – обновляет возраст и образование', async () => {
+  test('PATCH /api/users/:id – обновляет дату рождения и образование', async () => {
     const res = await request(app)
       .patch(`/api/users/${testUserId}`)
       .send({
-        age: 30,
+        dateOfBirth: '1985-10-15',
         education: 'Высшее техническое',
       });
     expect(res.status).toBe(200);
-    expect(res.body.age).toBe(30);
+    expect(res.body.dateOfBirth).toBe('1985-10-15');
     expect(res.body.education).toBe('Высшее техническое');
   });
 

@@ -36,6 +36,12 @@ const emptyQuestion: Question = {
   correctAnswer: 0
 };
 
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return 'Не указана';
+  const [year, month, day] = dateStr.split('-');
+  return `${day}.${month}.${year}`;
+};
+
 const AdminPanel: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
@@ -456,11 +462,10 @@ const AdminPanel: React.FC = () => {
                           <span className="text-blue-400">Логин:</span>
                           <span className="text-white">{u.login}</span>
                         </div>
+                        {/* Вместо возраста показываем дату рождения */}
                         <div className="flex justify-between text-sm">
-                          <span className="text-blue-400">Возраст:</span>
-                          <span className="text-white">
-                            {u.age ? `${u.age} лет` : 'Не указан'}
-                          </span>
+                          <span className="text-blue-400">Дата рождения:</span>
+                          <span className="text-white">{formatDate(u.dateOfBirth)}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-blue-400">Образование:</span>
@@ -590,7 +595,7 @@ const AdminPanel: React.FC = () => {
 
               <div>
                 <h3 className="text-lg font-semibold text-white mb-4">
-                  Вопросы ({form.questions.length})
+                  Вопросы ({form.questions.length+1})
                 </h3>
 
                 {form.questions.length > 0 && (

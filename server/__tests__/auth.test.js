@@ -8,13 +8,13 @@ describe('Регистрация и аутентификация', () => {
       password: '123456',
       fullName: 'Тестовый Пользователь',
       specialty: 'mechanic',
-      age: 30,
+      dateOfBirth: '1990-05-20',
       education: 'Высшее',
     };
     const res = await request(app).post('/api/auth/register').send(newUser);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('id');
-    expect(res.body.age).toBe(30);
+    expect(res.body.dateOfBirth).toBe('1990-05-20');
     expect(res.body.education).toBe('Высшее');
   });
 

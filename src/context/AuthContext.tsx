@@ -6,9 +6,7 @@ import {
   getCurrentUserId,
   setCurrentUserId,
   getUserById,
-  updateUserProfile,
 } from '../services/storage';
-import { initializeData } from '../data/seedData';
 
 interface AuthContextType {
   user: User | null;
@@ -38,7 +36,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const init = async () => {
       try {
-        await initializeData();
         const id = getCurrentUserId();
         if (id) {
           const currentUser = await getUserById(id);
@@ -99,15 +96,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      login,
-      register,
-      logout,
-      setUser,
-      isAuthenticated: !!user,
-      isAdmin: user?.role === 'admin'
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        setUser,
+        isAuthenticated: !!user,
+        isAdmin: user?.role === 'admin',
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -13,13 +13,24 @@ const Register: React.FC = () => {
     confirmPassword: '',
     fullName: '',
     specialty: '',
-    age: '',
+    dateOfBirth: '',      // заменено age
     education: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Функция для вычисления возраста по дате рождения
+  const calculateAge = (dateOfBirth: string): number | null => {
+    if (!dateOfBirth) return null;
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    return age;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,15 +41,16 @@ const Register: React.FC = () => {
       !formData.password.trim() ||
       !formData.fullName.trim() ||
       !formData.specialty ||
-      !formData.age ||
+      !formData.dateOfBirth ||
       !formData.education
     ) {
       setError('Заполните все поля');
       return;
     }
 
-    const age = parseInt(formData.age);
-    if (isNaN(age) || age < 16 || age > 80) {
+    // Валидация даты рождения: возраст должен быть от 16 до 80 лет
+    const age = calculateAge(formData.dateOfBirth);
+    if (age === null || age < 16 || age > 80) {
       setError('Возраст должен быть от 16 до 80 лет');
       return;
     }
@@ -59,7 +71,7 @@ const Register: React.FC = () => {
       password: formData.password,
       fullName: formData.fullName.trim(),
       specialty: formData.specialty,
-      age,
+      dateOfBirth: formData.dateOfBirth,   // передаём дату рождения
       education: formData.education
     });
     setIsLoading(false);
@@ -105,21 +117,18 @@ const Register: React.FC = () => {
               />
             </div>
 
-            {/* Возраст и Специальность в одну строку */}
+            {/* Дата рождения и Специальность в одну строку */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-blue-200 mb-2">
                   <Calendar className="w-4 h-4 inline mr-2" />
-                  Возраст
+                  Дата рождения
                 </label>
                 <input
-                  type="number"
-                  min={16}
-                  max={80}
-                  value={formData.age}
-                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                  type="date"
+                  value={formData.dateOfBirth}
+                  onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  placeholder="25"
                 />
               </div>
               <div>
